@@ -5,6 +5,8 @@ import { AuthModule } from './modules/auth/auth.module'
 import { RoleModule } from './modules/role/role.module'
 import { PermissionModule } from './modules/permission/permission.module'
 import { DatabaseModule } from './modules/database/database.module'
+import { JwtAuthGuard } from './modules/auth/gurads'
+import { AccountTypeGuard } from './modules/auth/gurads/account-type.guard'
 
 @Module({
   imports: [
@@ -19,6 +21,15 @@ import { DatabaseModule } from './modules/database/database.module'
     PermissionModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: 'APP_GUARD',
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: 'APP_GUARD',
+      useClass: AccountTypeGuard,
+    }
+  ],
 })
 export class AppModule {}

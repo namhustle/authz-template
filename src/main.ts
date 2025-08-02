@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config'
 import helmet from '@fastify/helmet'
 import fastifyCsrf from '@fastify/csrf-protection'
 import compression from '@fastify/compress'
-import { ErrorsInterceptor, TransformInterceptor } from './common/interceptors'
+import { ErrorInterceptor, TransformInterceptor } from './common/interceptors'
 import { BadRequestException, ValidationPipe } from '@nestjs/common'
 import { setupSwagger } from './swagger/swagger'
 
@@ -38,7 +38,7 @@ async function bootstrap() {
   await app.register(compression)
 
   // Interceptors
-  app.useGlobalInterceptors(new ErrorsInterceptor(), new TransformInterceptor())
+  app.useGlobalInterceptors(new ErrorInterceptor(), new TransformInterceptor())
 
   // Global Pipes
   app.useGlobalPipes(
@@ -49,17 +49,17 @@ async function bootstrap() {
       transformOptions: {
         enableImplicitConversion: true,
       },
-      exceptionFactory: (errors) => {
-        const formattedErrors: Record<string, string> = {}
-        for (const error of errors) {
-          if (error.constraints) {
-            formattedErrors[error.property] = Object.values(
-              error.constraints,
-            )[0]
-          }
-        }
-        return new BadRequestException(formattedErrors)
-      },
+      // exceptionFactory: (errors) => {
+      //   const formattedErrors: Record<string, string> = {}
+      //   for (const error of errors) {
+      //     if (error.constraints) {
+      //       formattedErrors[error.property] = Object.values(
+      //         error.constraints,
+      //       )[0]
+      //     }
+      //   }
+      //   return new BadRequestException(formattedErrors)
+      // },
     }),
   )
 

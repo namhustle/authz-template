@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common'
 import { Observable, throwError } from 'rxjs'
 import { catchError } from 'rxjs/operators'
+import { FastifyRequest } from 'fastify'
 
 interface ApiErrorResponse {
   statusCode: number
@@ -16,20 +17,18 @@ interface ApiErrorResponse {
 }
 
 @Injectable()
-export class ErrorsInterceptor implements NestInterceptor {
-  private readonly logger = new Logger(ErrorsInterceptor.name)
+export class ErrorInterceptor implements NestInterceptor {
+  private readonly logger = new Logger(ErrorInterceptor.name)
 
-  intercept(
-    context: ExecutionContext,
-    next: CallHandler,
-  ): Observable<ApiErrorResponse> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const ctx = context.switchToHttp()
-    const request = ctx.getRequest()
+    const request = ctx.getRequest<FastifyRequest>()
 
     return next.handle().pipe(
       catchError((err) => {
         const errStack = err instanceof Error ? err.stack : undefined
         this.logger.error(`Path: ${request.url}`)
+        this.logger.error(`Method: ${request.method}`)
         this.logger.error(`Error occurred: ${err.message || err}`, errStack)
 
         const statusCode =
@@ -44,10 +43,10 @@ export class ErrorsInterceptor implements NestInterceptor {
 
         const apiErrorResponse: ApiErrorResponse = {
           statusCode,
-          message,
+          message: err.response?.message || message,
         }
 
-        return throwError(() => apiErrorResponse)
+        return throwError(() => new HttpException(apiErrorResponse, statusCode))
       }),
     )
   }

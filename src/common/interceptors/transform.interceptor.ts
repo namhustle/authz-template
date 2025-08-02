@@ -20,7 +20,6 @@ interface ApiResponse<T> {
   message?: string
   data?: any
   meta?: PaginationMetadata
-  success?: boolean
 }
 
 @Injectable()
@@ -41,7 +40,6 @@ export class TransformInterceptor<T>
           message: res.message || 'SUCCESS',
           data: res.data || res || undefined,
           meta: res.meta || undefined,
-          success: true,
         }
       }),
     )
