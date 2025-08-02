@@ -1,0 +1,39 @@
+networks:
+  authz_network:
+    name: authz_network
+    driver: bridge
+
+services:
+  authz_database:
+    networks:
+      - authz_network
+    image: postgres:17
+    container_name: authz_database
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: thn
+      POSTGRES_PASSWORD: 100700
+      POSTGRES_DB: authz
+    volumes:
+      - authz_database:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  authz_api:
+    networks:
+      - authz_network
+    build: .
+    container_name: authz_api
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://thn:100700@authz_database:5432/authz
+      PORT: 3000
+      JWT_ACCESS_SECRET: your_access_secret
+      JWT_REFRESH_SECRET: your_refresh_secret
+    depends_on:
+      - authz_database
+    ports:
+      - '3000:3000'
+
+volumes:
+  authz_database:
