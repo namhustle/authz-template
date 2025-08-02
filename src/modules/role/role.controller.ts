@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common'
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -29,9 +38,7 @@ export class RoleController {
   @Get()
   @ApiOperation({ summary: 'Get all roles' })
   @ApiOkResponse({ description: 'OK' })
-  async find(
-    @Query() query: QueryRoleDto,
-  ) {
+  async find(@Query() query: QueryRoleDto) {
     return this.roleService.find(query)
   }
 
@@ -39,9 +46,7 @@ export class RoleController {
   @ApiOperation({ summary: 'Get a role by id' })
   @ApiOkResponse({ description: 'OK' })
   @ApiNotFoundResponse({ description: 'Not found' })
-  async getById(
-    @Param('roleId') roleId: string,
-  ) {
+  async getById(@Param('roleId') roleId: string) {
     return this.roleService.getById(roleId)
   }
 

@@ -1,5 +1,9 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
-import { InjectRepository } from '@nestjs/typeorm';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
 import { Role } from './entities/role.entity'
 import { DeleteResult, Repository } from 'typeorm'
 import { CreateRoleDto, QueryRoleDto, UpdateRoleDto } from './dtos'
@@ -9,15 +13,16 @@ import { PaginationMetadata } from '../../common/interceptors'
 export class RoleService {
   constructor(
     @InjectRepository(Role) private roleRepository: Repository<Role>,
-  ) {
-  }
+  ) {}
 
   async create(payload: CreateRoleDto): Promise<Role> {
     const newRole = this.roleRepository.create(payload)
     return this.roleRepository.save(newRole)
   }
 
-  async find(query: QueryRoleDto): Promise<{ data: Role[], meta: PaginationMetadata }> {
+  async find(
+    query: QueryRoleDto,
+  ): Promise<{ data: Role[]; meta: PaginationMetadata }> {
     const { page = 1, limit = 10, search } = query
     const queryBuilder = this.roleRepository.createQueryBuilder('role')
 

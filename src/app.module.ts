@@ -29,7 +29,7 @@ import { AccountTypeGuard } from './modules/auth/gurads/account-type.guard'
     {
       provide: 'APP_GUARD',
       useClass: AccountTypeGuard,
-    }
+    },
   ],
 })
 export class AppModule {}
