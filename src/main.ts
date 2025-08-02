@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config'
 import helmet from '@fastify/helmet'
 import fastifyCsrf from '@fastify/csrf-protection'
 import compression from '@fastify/compress'
+import { ErrorsInterceptor, TransformInterceptor } from './common/interceptors'
 import { BadRequestException, ValidationPipe } from '@nestjs/common'
 import { setupSwagger } from './swagger/swagger'
 
@@ -35,6 +36,9 @@ async function bootstrap() {
 
   // Compression (optional, for better performance)
   await app.register(compression)
+
+  // Interceptors
+  app.useGlobalInterceptors(new ErrorsInterceptor(), new TransformInterceptor())
 
   // Global Pipes
   app.useGlobalPipes(
