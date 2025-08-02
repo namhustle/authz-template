@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common'
-import { ConfigModule, ConfigService } from '@nestjs/config'
-import { TypeOrmModule } from '@nestjs/typeorm'
+import { ConfigModule } from '@nestjs/config'
 import { AccountModule } from './modules/account/account.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { RoleModule } from './modules/role/role.module'
 import { PermissionModule } from './modules/permission/permission.module'
+import { DatabaseModule } from './modules/database/database.module'
 
 @Module({
   imports: [
@@ -12,16 +12,7 @@ import { PermissionModule } from './modules/permission/permission.module'
       isGlobal: true,
       envFilePath: '.env',
     }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        url: config.get<string>('DATABASE_URL'),
-        autoLoadEntities: true,
-        synchronize: true,
-      }),
-    }),
+    DatabaseModule,
     AccountModule,
     AuthModule,
     RoleModule,
