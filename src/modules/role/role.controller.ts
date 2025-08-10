@@ -20,6 +20,7 @@ import {
 } from '@nestjs/swagger'
 import { RoleService } from './role.service'
 import { CreateRoleDto, QueryRoleDto, UpdateRoleDto } from './dtos'
+import { RequiredPermissions } from '../auth/decorators'
 
 @Controller('roles')
 @ApiTags('Role')
@@ -28,21 +29,25 @@ export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
   @Post()
+  @RequiredPermissions('CREATE:ROLE')
   @ApiOperation({ summary: 'Create a new role' })
-  @ApiCreatedResponse({ description: 'Created' })
-  @ApiConflictResponse({ description: 'Conflict' })
+  @ApiCreatedResponse({ description: 'Role created successfully' })
+  @ApiConflictResponse({ description: 'Role name already exists' })
+  @ApiBadRequestResponse({ description: 'Invalid permissions provided' })
   async create(@Body() payload: CreateRoleDto) {
     return this.roleService.create(payload)
   }
 
   @Get()
+  @RequiredPermissions('GET:ROLE')
   @ApiOperation({ summary: 'Get all roles' })
   @ApiOkResponse({ description: 'OK' })
-  async find(@Query() query: QueryRoleDto) {
-    return this.roleService.find(query)
+  async findMany(@Query() query: QueryRoleDto) {
+    return this.roleService.findMany(query)
   }
 
   @Get(':roleId')
+  @RequiredPermissions('GET:ROLE')
   @ApiOperation({ summary: 'Get a role by id' })
   @ApiOkResponse({ description: 'OK' })
   @ApiNotFoundResponse({ description: 'Not found' })
@@ -51,10 +56,12 @@ export class RoleController {
   }
 
   @Patch(':roleId')
+  @RequiredPermissions('UPDATE:ROLE')
   @ApiOperation({ summary: 'Update a role' })
-  @ApiOkResponse({ description: 'OK' })
-  @ApiConflictResponse({ description: 'Conflict' })
-  @ApiNotFoundResponse({ description: 'Not found' })
+  @ApiOkResponse({ description: 'Role updated successfully' })
+  @ApiConflictResponse({ description: 'Role name already exists' })
+  @ApiNotFoundResponse({ description: 'Role not found' })
+  @ApiBadRequestResponse({ description: 'Invalid permissions provided' })
   async updateById(
     @Param('roleId') roleId: string,
     @Body() payload: UpdateRoleDto,
@@ -63,6 +70,7 @@ export class RoleController {
   }
 
   @Delete(':roleId')
+  @RequiredPermissions('DELETE:ROLE')
   @ApiOperation({ summary: 'Delete a role' })
   @ApiOkResponse({ description: 'OK' })
   @ApiNotFoundResponse({ description: 'Not found' })
