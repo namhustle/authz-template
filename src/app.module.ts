@@ -5,8 +5,11 @@ import { AuthModule } from './modules/auth/auth.module'
 import { RoleModule } from './modules/role/role.module'
 import { PermissionModule } from './modules/permission/permission.module'
 import { DatabaseModule } from './modules/database/database.module'
-import { JwtAuthGuard } from './modules/auth/gurads'
-import { AccountTypeGuard } from './modules/auth/gurads/account-type.guard'
+import {
+  JwtAuthGuard,
+  RequiredAccountTypeGuard,
+  RequiredPermissionGuard,
+} from './modules/auth/gurads'
 
 @Module({
   imports: [
@@ -28,7 +31,11 @@ import { AccountTypeGuard } from './modules/auth/gurads/account-type.guard'
     },
     {
       provide: 'APP_GUARD',
-      useClass: AccountTypeGuard,
+      useClass: RequiredAccountTypeGuard,
+    },
+    {
+      provide: 'APP_GUARD',
+      useClass: RequiredPermissionGuard,
     },
   ],
 })

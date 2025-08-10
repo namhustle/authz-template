@@ -2,11 +2,11 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { IS_PUBLIC_KEY } from '../decorators'
 import { AccountType } from '../../account/enums/account.enum'
-import { ACCOUNT_TYPES_KEY } from '../decorators/account-type.decorator'
+import { ACCOUNT_TYPES_KEY } from '../decorators'
 import { AuthenticatedRequest } from '../interfaces'
 
 @Injectable()
-export class AccountTypeGuard implements CanActivate {
+export class RequiredAccountTypeGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {

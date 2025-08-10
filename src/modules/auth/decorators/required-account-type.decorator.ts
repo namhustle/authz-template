@@ -3,5 +3,5 @@ import { SetMetadata } from '@nestjs/common'
 
 export const ACCOUNT_TYPES_KEY = 'accountTypes'
 
-export const AccountTypes = (...types: AccountType[]) =>
+export const RequiredAccountTypes = (...types: AccountType[]) =>
   SetMetadata(ACCOUNT_TYPES_KEY, types)
